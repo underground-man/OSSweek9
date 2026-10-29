@@ -69,7 +69,33 @@ editButton.addEventListener("click", function () {
     document.getElementById("cancelButton").hidden = false;
 });
 
+const deleteButton = document.createElement("button");
+
+deleteButton.type = "button";
+deleteButton.textContent = "삭제";
+
+deleteButton.addEventListener("click", async function () {
+    const result = confirm(
+        `${movie.title} 영화를 삭제하시겠습니까?`
+    );
+
+    if (!result) {
+        return;
+    }
+
+    const message = document.getElementById("message");
+
+    try {
+        await deleteMovie(movie.id);
+        message.textContent = "영화 삭제 성공";
+    } catch (error) {
+        console.error(error);
+        message.textContent = "영화 삭제 실패";
+    }
+});
+
 management.appendChild(editButton);
+management.appendChild(deleteButton);
 
         row.appendChild(id);
         row.appendChild(title);
@@ -113,6 +139,18 @@ async function updateMovie(id, movie) {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(movie)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+
+    await loadMovies();
+}
+
+async function deleteMovie(id) {
+    const response = await fetch(`${apiUrl}/${id}`, {
+        method: "DELETE"
     });
 
     if (!response.ok) {
