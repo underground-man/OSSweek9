@@ -66,9 +66,26 @@ async function loadMovies(){
 
 loadMovies();
 
+
+async function addMovie(movie){
+    const response = await fetch (apiUrl,{
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(movie)
+    });
+
+    if(!response.ok){
+        throw new Error(`HTTP ${response.status}`);
+    }
+
+    await loadMovies();
+}
+
 const movieform = document.getElementById("movieform");
 
-movieform.addEventListener("submit",function(event){
+movieform.addEventListener("submit",async function(event){
     event.preventDefault();
 
     if(!movieform.checkValidity()){
@@ -88,4 +105,16 @@ movieform.addEventListener("submit",function(event){
     }
 
     console.log(movie);
+
+    const message = document.getElementById("message");
+
+    try{
+        await addMovie(movie);
+
+        movieform.reset();
+        message.textContent= "영화 등록 성공";
+    }catch(error){
+        console.error(error);
+        message.textContent="영화 등록 실패";
+    }
 });
