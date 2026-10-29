@@ -14,11 +14,11 @@
     <a href="./index.html">다시 메인으로</a>
     
     <form id="movieform">
-            <input id="title" type="text" placeholder="영화 제목">
-        <input id="director" type="text" placeholder="감독">
-        <input id="genre" type="text" placeholder="장르">
-        <input id="releaseYear" type="number" placeholder="개봉 연도">
-        <input id="rating" type="number" step="0.1" placeholder="평점">
+            <input id="title" type="text" placeholder="영화 제목" minlength="2" required>
+        <input id="director" type="text" placeholder="감독" minlength="2" required>
+        <input id="genre" type="text" placeholder="장르" minlength="1"  required>
+        <input id="releaseYear" type="number" placeholder="개봉 연도" min=1900 max= 2026 required>
+        <input id="rating" type="number" step="0.1" placeholder="평점"  min=0 max=10 required>
 
         <button id="submitButton" type="submit">등록</button>
         <button id="cancelButton" type="button" hidden>수정 취소</button>

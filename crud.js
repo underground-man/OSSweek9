@@ -65,3 +65,27 @@ async function loadMovies(){
 }
 
 loadMovies();
+
+const movieform = document.getElementById("movieform");
+
+movieform.addEventListener("submit",function(event){
+    event.preventDefault();
+
+    if(!movieform.checkValidity()){
+        return;
+    }
+
+    const movie ={
+                title: document.getElementById("title").value,
+        director: document.getElementById("director").value,
+        genre: document.getElementById("genre").value,
+        releaseYear: Number(
+            document.getElementById("releaseYear").value
+        ),
+        rating: Number(
+            document.getElementById("rating").value
+        )
+    }
+
+    console.log(movie);
+});
