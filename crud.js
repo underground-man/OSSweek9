@@ -1,5 +1,6 @@
 const apiUrl= "https://6ae2c648bbb54129229a614e.mockapi.io/movies";
 let editingId = null;
+let allMovies = [];
 
 async function loadMovies(){
     try{
@@ -10,17 +11,21 @@ async function loadMovies(){
 
         }
 
-        const movies = await response.json();
+        allMovies = await response.json();
 
-        console.log(movies);
-        rederMovies(movies);
+        console.log(allMovies);
+        rederMovies(allMovies);
     } 
 
     catch(error){
         console.error(error);
     }
 
-    function rederMovies(movies){
+    
+
+}
+
+function rederMovies(movies){
         const movielist = document.getElementById("movieList");
 
         movielist.replaceChildren();
@@ -110,8 +115,6 @@ management.appendChild(deleteButton);
         
         });
     }
-
-}
 
 loadMovies();
 
@@ -226,4 +229,23 @@ cancelButton.addEventListener("click", function () {
 
     document.getElementById("message").textContent =
         "수정을 취소했습니다.";
+});
+
+const searchInput =
+    document.getElementById("searchInput");
+
+searchInput.addEventListener("input", function () {
+    const keyword = searchInput.value
+        .trim()
+        .toLowerCase();
+
+    const filteredMovies = allMovies.filter(
+        function (movie) {
+            return movie.title
+                .toLowerCase()
+                .includes(keyword);
+        }
+    );
+
+    rederMovies(filteredMovies);
 });
