@@ -19,6 +19,8 @@ async function loadMovies(){
 
     catch(error){
         console.error(error);
+        const message = document.getElementById("message");
+        message.textContent = "영화 목록을 불러오지 못했습니다.";
     }
 
     
