@@ -1,4 +1,5 @@
 const apiUrl= "https://6ae2c648bbb54129229a614e.mockapi.io/movies";
+let editingId = null;
 
 async function loadMovies(){
     try{
@@ -45,8 +46,30 @@ async function loadMovies(){
         const rating = document.createElement("td");
         rating.textContent = movie.rating;
 
-        const management = document.createElement("td");
-        management.textContent = "-";
+const management = document.createElement("td");
+
+const editButton = document.createElement("button");
+
+editButton.type = "button";
+editButton.textContent = "수정";
+
+editButton.addEventListener("click", function () {
+    editingId = movie.id;
+
+    document.getElementById("title").value = movie.title;
+    document.getElementById("director").value = movie.director;
+    document.getElementById("genre").value = movie.genre;
+    document.getElementById("releaseYear").value =
+        movie.releaseYear;
+    document.getElementById("rating").value = movie.rating;
+
+    document.getElementById("submitButton").textContent =
+        "수정";
+
+    document.getElementById("cancelButton").hidden = false;
+});
+
+management.appendChild(editButton);
 
         row.appendChild(id);
         row.appendChild(title);
@@ -83,6 +106,23 @@ async function addMovie(movie){
     await loadMovies();
 }
 
+async function updateMovie(id, movie) {
+    const response = await fetch(`${apiUrl}/${id}`, {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(movie)
+    });
+
+    if (!response.ok) {
+        throw new Error(`HTTP ${response.status}`);
+    }
+
+    await loadMovies();
+}
+
+
 const movieform = document.getElementById("movieform");
 
 movieform.addEventListener("submit",async function(event){
@@ -108,13 +148,44 @@ movieform.addEventListener("submit",async function(event){
 
     const message = document.getElementById("message");
 
-    try{
+try {
+    if (editingId === null) {
         await addMovie(movie);
+        message.textContent = "영화 등록 성공";
+    } else {
+        await updateMovie(editingId, movie);
+        message.textContent = "영화 수정 성공";
 
-        movieform.reset();
-        message.textContent= "영화 등록 성공";
-    }catch(error){
-        console.error(error);
-        message.textContent="영화 등록 실패";
+        editingId = null;
     }
+
+    movieform.reset();
+
+    document.getElementById("submitButton").textContent =
+        "등록";
+
+    document.getElementById("cancelButton").hidden = true;
+} catch (error) {
+    console.error(error);
+    message.textContent = "요청 실패";
+}
+
+
+});
+
+const cancelButton =
+    document.getElementById("cancelButton");
+
+cancelButton.addEventListener("click", function () {
+    editingId = null;
+
+    movieform.reset();
+
+    document.getElementById("submitButton").textContent =
+        "등록";
+
+    cancelButton.hidden = true;
+
+    document.getElementById("message").textContent =
+        "수정을 취소했습니다.";
 });
